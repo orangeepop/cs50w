@@ -1,0 +1,12 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div class="mb-3">
+        <form action="{% url 'index' %}" method="post">
+            {% csrf_token %}
+            <label for="new-post" class="form-label">What's on your mind?</label>
+            <textarea class='form-control' name="new-post" rows="4"></textarea>
+            <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+    </div>>
+{% endblock %}
