@@ -15,6 +15,8 @@ def index(request):
         user = request.user
         Posts.objects.create(author=user, post=post)
 
+    # test
+
     return render(request, "network/index.html")
 
 
