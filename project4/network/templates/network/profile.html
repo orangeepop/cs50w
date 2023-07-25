@@ -1,0 +1,20 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div class="container-xl p-4">
+        <h3>{{ user }}</h3>
+        <p> {{ follows }} Following, {{ followers }} Followers</p>
+        {% if show_button == True %}
+            <form action="{% url 'profile' user %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary" name="follow" value="True">Follow</button>
+            </form>
+        {% elif followed == True %}
+            <form action="{% url 'profile' user %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary" name="unfollow" value="True">Unfollow</button>
+            </form>
+        {% endif %}
+    </div>
+    {% include "network/postlayout.html" %}
+{% endblock %}

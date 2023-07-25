@@ -1,0 +1,103 @@
+
+<div class="container-xl p-4">
+    <!-- show posts in page -->
+    {% for post in page_obj %}
+        <div class="mb-3 p-3 border">
+            <h5>
+                <a href="{% url 'profile' post.author %}">{{ post.author }}</a>
+            </h5>
+            <p id="{{ post.id }}">
+                {{ post.post }} 
+                {% if user.get_username == post.author.username %}
+                    <!-- if logged in user is looking at his/her own post, create edit button -->
+                    <script type="text/javascript">
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // edit button
+                            button = document.createElement('button');
+                            button.className = 'btn btn-light btn-sm';
+                            button.innerHTML= 'Edit'
+                            var id = "{{ post.id }}"
+                            
+                            //add button to post
+                            br = document.createElement('br');
+                            document.querySelector(`[id='${id}']`).appendChild(br);
+                            document.querySelector(`[id='${id}']`).appendChild(button);
+
+
+                            //when button is clicked, post content may be edited
+                            button.addEventListener('click', function() {
+                                //erase existing post and replace with form and textarea
+                                document.querySelector(`[id='${id}']`).innerHTML = ''
+                                form = document.createElement('form');
+                                form.action = "{% url 'index' %}"
+                                form.method = "post"
+                                form.innerHTML = '{% csrf_token %}'
+
+                                text = document.createElement('textarea');
+                                text.innerHTML = '{{ post.post }}'
+                                text.className = 'form-control'
+                                text.name = 'edit-post'
+                                form.appendChild(text);
+
+                                submit = document.createElement('button');
+                                submit.innerHTML = 'Save'
+                                submit.className = 'btn btn-light btn-sm'
+                                submit.type = 'submit'
+                                submit.name = 'id'
+                                submit.value = id
+                                form.appendChild(submit);
+
+                                document.querySelector(`[id='${id}']`).appendChild(form);
+                            })  
+                        })
+                    </script>
+                {% endif %}
+            </p>
+            <p style="font-size: 12px">
+                <!-- <span id="like-{{ post.id }}">❤️</span>
+                <script type="text/javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var id = "{{ post.id }}"
+                        document.querySelector(`[id='like-${id}']`).addEventListener('click', function() {
+                            console.log("clicked")
+                            fetch(`/posts/${id}`)
+                                .then(response => response.json())
+                                .then(likes => {
+                                    console.log(likes);
+                                })
+                        })
+                    })
+                </script> -->
+                {{ post.likes }}
+            </p>
+            <p style="color: gray; font-size: 12px">
+                {{ post.timestamp }}
+            </p>
+        </div>
+    {% endfor %}
+    
+    <!-- paginate based on how many posts -->
+    <div class="pagination">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo; first</a>
+                    </li>
+                    <li class="page-item">  
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    </li>  
+                {% endif %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
