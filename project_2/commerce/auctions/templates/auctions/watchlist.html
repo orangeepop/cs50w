@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    {% if watchlists %}
+        {% for watchlist in watchlists %}
+            <form action = "{% url 'listing' watchlist.id %}" method="post">
+                {% csrf_token %}
+                <li><a href="{% url 'listing' watchlist.id %}">{{ watchlist.listing.title }}</a>
+                    <button name="remove" value="{{ watchlist.listing.id }}" type="submit" formaction="{% url 'watchlist' %}" formmethod="post">Remove</button></li>
+                
+            </form>
+        {% endfor %}
+    {% else %}
+        Your watchlist is empty!
+    {% endif %}
+
+{% endblock %}

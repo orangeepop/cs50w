@@ -1,0 +1,57 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <div>
+        {{ listing.title }}</b> ${{ listing.price }} {{listing.description}} 
+        {% if listing.image %}
+            <img src="{{listing.image}}">
+        {% endif %} 
+    </div>
+
+    <div>
+        {% if listing.closed == False %}
+            <!-- active listing -->
+            {% if highest_bid %}
+            Current bid: ${{ highest_bid.bid }}
+            {% else %}
+            No bids so far
+            {% endif %}
+            {% if seller_visiting == True %}
+                <form action="{% url 'listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" name="close" value="Close listing">
+                </form>
+            {% else %}
+                Make a bid: <br>
+                <form action="{% url 'listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="number" name="bid" placeholder="Your bid" mix="0" step="0.01">
+                    <input type="submit" value="submit">
+                    <input type="submit" name="watchlist" value="Add to watchlist">
+                    <br>
+                    <textarea name="comment" rows="3" cols="50">Comments</textarea>
+                    <input type="submit" value="Submit comment">
+                </form>
+            {% endif %}
+
+        {% else %}
+            <!-- inactive listing -->
+            {% if winner_visiting == True %}
+                You won the bid!
+            {% else %}
+                Auction has ended
+            {% endif %}
+        {% endif %}
+
+
+        <div>
+            {% if comments %}
+                {% for comment in comments %}
+                    {{ comment.comment }} <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

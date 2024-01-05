@@ -1,0 +1,16 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    <ul>
+        {% for listing in listings %}
+            <form action="{% url 'listing' listing.id %}" method="post">
+                <a href="{% url 'listing' listing.id %}"><li><b>{{ listing.title }}</b> ${{ listing.price }} {{listing.description}}
+                    {% if listing.image %}
+                        <img src="{{listing.image}}">
+                    {% endif %} </li></a>
+            </form>
+        {% endfor %}
+    </ul>
+{% endblock %}
